@@ -1,0 +1,84 @@
+﻿@model MVCExample.Models.Student
+
+@{
+    ViewData["Title"] = "Create";
+}
+<script src="~/lib/jquery/dist/jquery-3.4.1.min.js"></script>
+<h1>Create</h1>
+
+<h4>Student</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StudentName" class="control-label"></label>
+                <input id="StuName" asp-for="StudentName" class="form-control" />
+                <span asp-validation-for="StudentName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <input asp-for="Gender" class="form-control" />
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="xyz" onclick="SaveCategory()" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<script type="text/javascript">
+
+    //$(document).ready(function () {
+    //    $("#xyz").click(function () {
+    //        var name = $("#StuName").val();
+    //        var fulldata = $("#data").val();
+    //        CheckForDuplicateName(name, fulldata);
+    //    });
+    //});
+
+    function SaveCategory() {
+        var name = document.getElementById('StuName').value;
+        var fulldata = $("#data").val();
+        CheckForDuplicateName(name, fulldata);
+    }
+
+    function CheckForDuplicateName(_value,_fulldata) {
+        $.ajax({
+            url: "/Home/CheckForDuplicateName",
+            type: "Get",
+            async: "false",
+            data: { stuName: _value },
+            success: function (result) {
+                if (result == 0) {
+                    $.ajax({
+                        url: "/Home/SaveRecord",
+                        type: "Post",
+                        async: "false",
+                        data: { student: _fulldata },
+                        success: function (data) {
+                            $("#NewPage").load("https://localhost:44353/Home/Data");
+
+                        }
+                    });
+                }
+                else
+                {
+                    $("#StuName").after("<span style='color:red'>Student Name already exists..</span>");
+                }
+            }
+        });
+
+    }
+</script>

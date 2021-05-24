@@ -1,0 +1,58 @@
+﻿    <script src="~/lib/jquery/dist/jquery-3.4.1.min.js"></script>
+    <div class="modal" id="data">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <input type="text" id="StuName" disabled value="StudentName">
+                    <input type="text" disabled value="Age">
+                    <input type="text" disabled value="Gender">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cat" onclick="SaveCategory()" class="bluebuttoncss view" style="float:right; ">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        //$(document).ready(function () {
+        //    $("#xyz").click(function () {
+        //        var name = $("#StuName").val();
+        //        var fulldata = $("#data").val();
+        //        CheckForDuplicateName(name, fulldata);
+        //    });
+        //});
+
+        function SaveCategory() {
+            var name = document.getElementById('StuName').value;
+            var fulldata = $("#data").val();
+            CheckForDuplicateName(name, fulldata);
+        }
+
+        function CheckForDuplicateName(_value, _fulldata) {
+            $.ajax({
+                url: "/Home/CheckForDuplicateName",
+                type: "Get",
+                async: "false",
+                data: { stuName: _value },
+                success: function (result) {
+                    if (result == 0) {
+                        $.ajax({
+                            url: "/Home/SaveRecord",
+                            type: "Post",
+                            async: "false",
+                            data: { student: _fulldata },
+                            success: function (data) {
+                                $("#NewPage").load("https://localhost:44353/Home/Data");
+
+                            }
+                        });
+                    }
+                    else {
+                        $("#StuName").after("<span style='color:red'>Student Name already exists..</span>");
+                    }
+                }
+            });
+
+        }
+    </script>
